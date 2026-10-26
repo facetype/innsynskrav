@@ -7,67 +7,41 @@ import { companies } from '../data/companies';
   title="Be om innsyn etter avslag på jobbsøknad"
   description="Finn riktig personvernadresse og be arbeidsgiveren om innsyn i hvordan søknaden din ble behandlet."
 >
-  <div class="reveal">
-    <section class="hero" aria-labelledby="hero-title">
-      <p class="eyebrow">GDPR artikkel 15 og 22</p>
-      <h1 id="hero-title">Fått avslag? Du har rett til å <em>se</em> hva de vet om deg.</h1>
-      <p class="lede">
-        Arbeidsgiveren må fortelle deg hvilke opplysninger de har om søknaden din, hvem de har delt dem
-        med — og om avslaget ble tatt av en maskin. De har én måned på å svare.
-      </p>
-    </section>
+  <section class="hero" aria-labelledby="hero-title">
+    <h1 id="hero-title">Fått avslag på en jobbsøknad?</h1>
+    <p class="lede">
+      Du har rett til å <mark>se hva arbeidsgiveren vet om deg</mark> — og få vite om det var en maskin som
+      sa nei. Vi finner riktig adresse og skriver kravet for deg.
+    </p>
+  </section>
 
-    <ol class="steps" aria-label="Slik fungerer det">
-      <li>
-        <span class="step-number mono" aria-hidden="true">01</span>
-        <h2>Finn riktig mottaker</h2>
-        <p>Avslaget kommer ofte fra et rekrutteringssystem. Kravet skal til personvernombudet.</p>
-      </li>
-      <li>
-        <span class="step-number mono" aria-hidden="true">02</span>
-        <h2>Send innsynskravet</h2>
-        <p>Fra din egen e-post. Vi lagrer ingenting av det du skriver.</p>
-      </li>
-      <li>
-        <span class="step-number mono" aria-hidden="true">03</span>
-        <h2>Én måneds frist</h2>
-        <p>Svarer de ikke, purrer du — og klager til Datatilsynet.</p>
-      </li>
-    </ol>
-
-    <section class="register" aria-labelledby="register-title">
-      <div class="register-head">
-        <h2 id="register-title">Arbeidsgivere</h2>
-        <p class="eyebrow">{companies.length} kontrollert</p>
-      </div>
-      <ul>
-        {
-          companies.map((company) => (
-            <li>
-              <a href={`/firma/${company.slug}/`}>
-                <span class="register-brand">{company.brands.join(' / ')}</span>
-                <span class="register-controller">{company.controller.name}</span>
-                <span class="register-email mono">{company.privacyEmail}</span>
-                <span class="register-arrow" aria-hidden="true">→</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-  </div>
+  <section class="companies" aria-labelledby="companies-title">
+    <h2 id="companies-title">Hvor søkte du?</h2>
+    <ul>
+      {
+        companies.map((company) => (
+          <li>
+            <a href={`/firma/${company.slug}/`}>
+              <span class="company-brand">{company.brands.join(' / ')}</span>
+              <span class="company-controller">{company.controller.name}</span>
+              <span class="company-arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="missing">
+      Listen er under arbeid — flere arbeidsgivere kommer.
+    </p>
+  </section>
 </Layout>
 
 <style>
-  .reveal {
-    display: grid;
-    gap: var(--space-7);
-  }
-
   .hero {
     display: grid;
     gap: var(--space-5);
-    max-width: 52rem;
+    max-width: 44rem;
+    padding-block: var(--space-6) var(--space-7);
   }
 
   .lede {
@@ -76,112 +50,67 @@ import { companies } from '../data/companies';
     max-width: var(--measure);
   }
 
-  .steps {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  .lede mark {
+    color: var(--ink);
+  }
+
+  .companies {
     display: grid;
     gap: var(--space-5);
   }
 
-  @media (min-width: 48rem) {
-    .steps {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  .steps li {
-    display: grid;
-    gap: var(--space-2);
-    align-content: start;
-    padding-top: var(--space-4);
-    border-top: 2px solid var(--ink);
-  }
-
-  .step-number {
-    color: var(--stamp);
-  }
-
-  .steps p {
-    color: var(--ink-muted);
-  }
-
-  .register-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--space-4);
-    padding-bottom: var(--space-3);
-    border-bottom: 2px solid var(--ink);
-  }
-
-  .register ul {
+  .companies ul {
     list-style: none;
     margin: 0;
     padding: 0;
-  }
-
-  .register a {
     display: grid;
-    grid-template-columns: 1fr auto;
-    gap: var(--space-1) var(--space-4);
-    padding: var(--space-4) var(--space-2);
-    border-bottom: 1px solid var(--rule);
+    gap: var(--space-3);
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  }
+
+  .companies a {
+    position: relative;
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-5);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
     text-decoration: none;
-    transition: background-color 150ms var(--ease-out);
+    transition:
+      border-color 150ms var(--ease-out),
+      transform 150ms var(--ease-out);
   }
 
-  .register a:hover {
-    background: var(--stamp-wash);
+  .companies a:hover {
+    border-color: var(--ink);
+    transform: translateY(-2px);
   }
 
-  .register-brand {
-    font-family: var(--font-display);
-    font-size: var(--text-xl);
-    line-height: 1.1;
+  .company-brand {
+    font-size: var(--text-lg);
+    font-weight: 700;
   }
 
-  .register-controller,
-  .register-email {
-    grid-column: 1;
-    color: var(--ink-muted);
+  .company-controller {
     font-size: var(--text-sm);
+    color: var(--ink-muted);
   }
 
-  .register-email {
-    overflow-wrap: anywhere;
+  .company-arrow {
+    position: absolute;
+    top: var(--space-5);
+    right: var(--space-5);
+    font-size: var(--text-lg);
   }
 
-  .register-arrow {
-    grid-column: 2;
-    grid-row: 1 / span 3;
-    align-self: center;
-    color: var(--stamp);
-    font-size: var(--text-xl);
-    transition: transform 150ms var(--ease-out);
-  }
-
-  .register a:hover .register-arrow {
-    transform: translateX(4px);
-  }
-
-  @media (min-width: 48rem) {
-    .register a {
-      grid-template-columns: 1.2fr 1fr 1.2fr auto;
-      align-items: baseline;
-    }
-
-    .register-controller,
-    .register-email,
-    .register-arrow {
-      grid-column: auto;
-      grid-row: auto;
-    }
+  .missing {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .register a,
-    .register-arrow {
+    .companies a {
       transition: none;
     }
   }

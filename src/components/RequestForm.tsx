@@ -70,7 +70,7 @@ export default function RequestForm({ brand, recipient, atsNames }: Props) {
     <div className="request">
       <form className="request-form" onSubmit={openEmail} aria-describedby={`${idPrefix}-privacy`}>
         <p id={`${idPrefix}-privacy`} className="request-privacy">
-          Det du skriver blir værende i nettleseren din. Vi lagrer og sender ingenting.
+          <span aria-hidden="true">🔒</span> Det du skriver forlater aldri nettleseren din.
         </p>
         <div className="request-fields">
           {fields.map((field) => {
@@ -104,7 +104,7 @@ export default function RequestForm({ brand, recipient, atsNames }: Props) {
           <button type="submit" className="button">
             Skriv e-post <span aria-hidden="true">→</span>
           </button>
-          <button type="button" className="request-copy" onClick={copyText}>
+          <button type="button" className="button button-secondary" onClick={copyText}>
             Kopier teksten
           </button>
           <p className="request-status" role="status">
@@ -112,26 +112,27 @@ export default function RequestForm({ brand, recipient, atsNames }: Props) {
           </p>
         </div>
         <p className="request-hint">
-          Send helst fra samme e-postadresse som du brukte i søknaden. Åpner ikke e-posten seg, eller blir
-          teksten kuttet, bruk «Kopier teksten».
+          Send fra samme e-post som du søkte med. Blir teksten kuttet, bruk «Kopier teksten».
         </p>
       </form>
 
       <section className="request-preview" aria-labelledby={`${idPrefix}-preview-title`}>
-        <h3 id={`${idPrefix}-preview-title`} className="eyebrow">
-          Forhåndsvisning
+        <h3 id={`${idPrefix}-preview-title`} className="request-preview-title">
+          Slik blir e-posten
         </h3>
-        <dl className="request-meta mono">
-          <div>
-            <dt>Til</dt>
-            <dd>{recipient}</dd>
-          </div>
-          <div>
-            <dt>Emne</dt>
-            <dd>{request.subject}</dd>
-          </div>
-        </dl>
-        <p className="request-body">{request.body}</p>
+        <div className="request-sheet">
+          <dl className="request-meta mono">
+            <div>
+              <dt>Til</dt>
+              <dd>{recipient}</dd>
+            </div>
+            <div>
+              <dt>Emne</dt>
+              <dd>{request.subject}</dd>
+            </div>
+          </dl>
+          <p className="request-body">{request.body}</p>
+        </div>
       </section>
     </div>
   );

@@ -25,201 +25,151 @@ const atsList = companyAtsNames.join(' / ');
   title={`Slik ber du om innsyn hos ${brand}`}
   description={`Riktig personvernadresse for innsynskrav hos ${brand} (${company.controller.name}).`}
 >
-  <div class="reveal">
-    <nav aria-label="Brødsmuler">
-      <a class="back eyebrow" href="/">← Alle arbeidsgivere</a>
-    </nav>
+  <nav aria-label="Brødsmuler" class="crumbs">
+    <a href="/">← Alle arbeidsgivere</a>
+  </nav>
 
-    <header class="title">
-      <p class="eyebrow">Innsynskrav</p>
-      <h1>Slik ber du om innsyn hos <em>{brand}</em></h1>
-    </header>
-
-    <section class="recipient" aria-labelledby="recipient-title">
-      <div class="recipient-body">
-        <h2 id="recipient-title" class="eyebrow">Send kravet til</h2>
-        <p class="recipient-email mono">{company.privacyEmail}</p>
-        <a class="button" href="#krav">Lag kravet <span aria-hidden="true">↓</span></a>
-      </div>
-      <p class="stamp">
-        <span>Kontrollert</span>
-        <time datetime={company.lastVerified}>{formatDate(company.lastVerified)}</time>
+  <header class="title">
+    <h1>Innsynskrav til {brand}</h1>
+    <div class="recipient">
+      <p class="recipient-label">Sendes til</p>
+      <p class="recipient-email mono">{company.privacyEmail}</p>
+      <p class="recipient-verified">
+        <span class="check" aria-hidden="true">✓</span>{' '}
+        Kontrollert {formatDate(company.lastVerified)} mot{' '}
+        <a href={company.privacyPolicyUrl}>personvernerklæringen</a>
       </p>
-    </section>
-
-    <section id="krav" class="request-section" aria-labelledby="krav-title">
-      <h2 id="krav-title">Lag innsynskravet</h2>
-      <RequestForm client:load brand={brand} recipient={company.privacyEmail} atsNames={companyAtsNames} />
-    </section>
-
+    </div>
     {
       atsList && (
-        <aside class="warning" aria-labelledby="warning-title">
-          <h2 id="warning-title">Ikke svar på avslaget</h2>
-          <p>
-            Avslaget fra {brand} kommer trolig via rekrutteringssystemet {atsList}. Den adressen går ikke
-            til personvernombudet — send kravet til adressen over.
-          </p>
-        </aside>
+        <p class="warning">
+          <mark>Ikke svar på avslaget.</mark> Det kom via {atsList} og når ikke frem til personvernombudet.
+        </p>
       )
     }
+  </header>
 
-    <section class="record" aria-labelledby="record-title">
-      <h2 id="record-title">Behandlingsansvarlig</h2>
-      <dl>
-        <div>
-          <dt class="eyebrow">Navn</dt>
-          <dd>{company.controller.name}</dd>
-        </div>
-        <div>
-          <dt class="eyebrow">Org.nr.</dt>
-          <dd class="mono">{formatOrgNr(company.controller.orgNr)}</dd>
-        </div>
-        <div>
-          <dt class="eyebrow">Adresse</dt>
-          <dd>{company.controller.address}</dd>
-        </div>
-      </dl>
-      <p class="source">
-        Kilde: <a href={company.privacyPolicyUrl}>{brand}s personvernerklæring</a>
-      </p>
-    </section>
-  </div>
+  <section id="krav" class="request-section" aria-labelledby="krav-title">
+    <h2 id="krav-title" class="visually-hidden">Lag innsynskravet</h2>
+    <RequestForm client:load brand={brand} recipient={company.privacyEmail} atsNames={companyAtsNames} />
+  </section>
+
+  <section class="after" aria-labelledby="after-title">
+    <h2 id="after-title">Hva skjer etterpå?</h2>
+    <p>
+      De har én måned på å svare. Hører du ingenting, kan du purre — og deretter klage til Datatilsynet.
+    </p>
+  </section>
+
+  <details class="controller">
+    <summary>Om behandlingsansvarlig</summary>
+    <dl>
+      <dt>Navn</dt>
+      <dd>{company.controller.name}</dd>
+      <dt>Org.nr.</dt>
+      <dd class="mono">{formatOrgNr(company.controller.orgNr)}</dd>
+      <dt>Adresse</dt>
+      <dd>{company.controller.address}</dd>
+    </dl>
+  </details>
 </Layout>
 
 <style>
-  .reveal {
-    display: grid;
-    gap: var(--space-6);
-    max-width: 48rem;
-  }
-
-  .back {
+  .crumbs a {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
     text-decoration: none;
   }
 
-  .back:hover {
+  .crumbs a:hover {
     color: var(--ink);
   }
 
   .title {
     display: grid;
-    gap: var(--space-4);
+    gap: var(--space-5);
+    justify-items: start;
+    padding-block: var(--space-5) var(--space-6);
   }
 
   .recipient {
-    position: relative;
     display: grid;
-    gap: var(--space-5);
-    padding: var(--space-5);
-    background: var(--paper-raised);
-    border: 1px solid var(--rule);
-    border-left: 4px solid var(--stamp);
+    gap: var(--space-1);
+    padding: var(--space-4) var(--space-5);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    max-width: 100%;
   }
 
-  @media (min-width: 40rem) {
-    .recipient {
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      padding: var(--space-6);
-    }
-  }
-
-  .recipient-body {
-    display: grid;
-    gap: var(--space-3);
-    justify-items: start;
+  .recipient-label {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
   }
 
   .recipient-email {
-    font-size: clamp(1.125rem, 4vw, 1.625rem);
+    font-size: clamp(1.0625rem, 3.5vw, 1.375rem);
     font-weight: 500;
     overflow-wrap: anywhere;
   }
 
-  .stamp {
-    justify-self: start;
-    display: grid;
-    gap: var(--space-1);
-    padding: var(--space-2) var(--space-4);
-    border: 3px double var(--stamp);
-    color: var(--stamp);
-    font-family: var(--font-mono);
+  .recipient-verified {
     font-size: var(--text-sm);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    text-align: center;
-    transform: rotate(var(--stamp-tilt));
+    color: var(--ink-muted);
   }
 
-  .stamp span {
-    font-weight: 500;
-  }
-
-  .request-section {
-    display: grid;
-    gap: var(--space-5);
-    scroll-margin-top: var(--space-5);
-  }
-
-  .request-section > h2 {
-    padding-bottom: var(--space-3);
-    border-bottom: 2px solid var(--ink);
-  }
-
-  .warning {
-    display: grid;
-    gap: var(--space-2);
-    padding-left: var(--space-5);
-    border-left: 2px solid var(--ink);
-  }
-
-  .warning h2 {
-    font-size: var(--text-lg);
-    font-family: var(--font-body);
+  .check {
+    color: var(--ok);
     font-weight: 700;
   }
 
-  .warning p {
-    color: var(--ink-muted);
+  .warning {
     max-width: var(--measure);
   }
 
-  .record {
+  .after {
     display: grid;
-    gap: var(--space-4);
+    gap: var(--space-2);
+    max-width: var(--measure);
+    padding-block: var(--space-7) var(--space-5);
   }
 
-  .record h2 {
-    padding-bottom: var(--space-3);
-    border-bottom: 2px solid var(--ink);
+  .after h2 {
+    font-size: var(--text-lg);
   }
 
-  .record dl {
-    margin: 0;
-    display: grid;
+  .after p {
+    color: var(--ink-muted);
   }
 
-  .record dl div {
-    display: grid;
-    gap: var(--space-1);
-    padding-block: var(--space-3);
-    border-bottom: 1px solid var(--rule);
-  }
-
-  @media (min-width: 40rem) {
-    .record dl div {
-      grid-template-columns: 10rem 1fr;
-      align-items: baseline;
-    }
-  }
-
-  .record dd {
-    margin: 0;
-  }
-
-  .source {
+  .controller {
+    max-width: var(--measure);
     font-size: var(--text-sm);
     color: var(--ink-muted);
+  }
+
+  .controller summary {
+    cursor: pointer;
+  }
+
+  .controller dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-1) var(--space-4);
+    margin: var(--space-3) 0 0;
+  }
+
+  .controller dd {
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 </style>
