@@ -1,0 +1,225 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Layout from '../../layouts/Layout.astro';
+import { atsNames, companies, type Company } from '../../data/companies';
+import { formatDate, formatOrgNr } from '../../lib/format';
+import RequestForm from '../../components/RequestForm';
+
+export const getStaticPaths = (() =>
+  companies.map((company) => ({
+    params: { slug: company.slug },
+    props: { company },
+  }))) satisfies GetStaticPaths;
+
+interface Props {
+  company: Company;
+}
+
+const { company } = Astro.props;
+const brand = company.brands[0];
+const companyAtsNames = [...new Set(company.senders.map((sender) => atsNames[sender.ats]))];
+const atsList = companyAtsNames.join(' / ');
+---
+
+<Layout
+  title={`Slik ber du om innsyn hos ${brand}`}
+  description={`Riktig personvernadresse for innsynskrav hos ${brand} (${company.controller.name}).`}
+>
+  <div class="reveal">
+    <nav aria-label="Brødsmuler">
+      <a class="back eyebrow" href="/">← Alle arbeidsgivere</a>
+    </nav>
+
+    <header class="title">
+      <p class="eyebrow">Innsynskrav</p>
+      <h1>Slik ber du om innsyn hos <em>{brand}</em></h1>
+    </header>
+
+    <section class="recipient" aria-labelledby="recipient-title">
+      <div class="recipient-body">
+        <h2 id="recipient-title" class="eyebrow">Send kravet til</h2>
+        <p class="recipient-email mono">{company.privacyEmail}</p>
+        <a class="button" href="#krav">Lag kravet <span aria-hidden="true">↓</span></a>
+      </div>
+      <p class="stamp">
+        <span>Kontrollert</span>
+        <time datetime={company.lastVerified}>{formatDate(company.lastVerified)}</time>
+      </p>
+    </section>
+
+    <section id="krav" class="request-section" aria-labelledby="krav-title">
+      <h2 id="krav-title">Lag innsynskravet</h2>
+      <RequestForm client:load brand={brand} recipient={company.privacyEmail} atsNames={companyAtsNames} />
+    </section>
+
+    {
+      atsList && (
+        <aside class="warning" aria-labelledby="warning-title">
+          <h2 id="warning-title">Ikke svar på avslaget</h2>
+          <p>
+            Avslaget fra {brand} kommer trolig via rekrutteringssystemet {atsList}. Den adressen går ikke
+            til personvernombudet — send kravet til adressen over.
+          </p>
+        </aside>
+      )
+    }
+
+    <section class="record" aria-labelledby="record-title">
+      <h2 id="record-title">Behandlingsansvarlig</h2>
+      <dl>
+        <div>
+          <dt class="eyebrow">Navn</dt>
+          <dd>{company.controller.name}</dd>
+        </div>
+        <div>
+          <dt class="eyebrow">Org.nr.</dt>
+          <dd class="mono">{formatOrgNr(company.controller.orgNr)}</dd>
+        </div>
+        <div>
+          <dt class="eyebrow">Adresse</dt>
+          <dd>{company.controller.address}</dd>
+        </div>
+      </dl>
+      <p class="source">
+        Kilde: <a href={company.privacyPolicyUrl}>{brand}s personvernerklæring</a>
+      </p>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .reveal {
+    display: grid;
+    gap: var(--space-6);
+    max-width: 48rem;
+  }
+
+  .back {
+    text-decoration: none;
+  }
+
+  .back:hover {
+    color: var(--ink);
+  }
+
+  .title {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .recipient {
+    position: relative;
+    display: grid;
+    gap: var(--space-5);
+    padding: var(--space-5);
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--stamp);
+  }
+
+  @media (min-width: 40rem) {
+    .recipient {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding: var(--space-6);
+    }
+  }
+
+  .recipient-body {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+  }
+
+  .recipient-email {
+    font-size: clamp(1.125rem, 4vw, 1.625rem);
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+
+  .stamp {
+    justify-self: start;
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-4);
+    border: 3px double var(--stamp);
+    color: var(--stamp);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-align: center;
+    transform: rotate(var(--stamp-tilt));
+  }
+
+  .stamp span {
+    font-weight: 500;
+  }
+
+  .request-section {
+    display: grid;
+    gap: var(--space-5);
+    scroll-margin-top: var(--space-5);
+  }
+
+  .request-section > h2 {
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .warning {
+    display: grid;
+    gap: var(--space-2);
+    padding-left: var(--space-5);
+    border-left: 2px solid var(--ink);
+  }
+
+  .warning h2 {
+    font-size: var(--text-lg);
+    font-family: var(--font-body);
+    font-weight: 700;
+  }
+
+  .warning p {
+    color: var(--ink-muted);
+    max-width: var(--measure);
+  }
+
+  .record {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .record h2 {
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .record dl {
+    margin: 0;
+    display: grid;
+  }
+
+  .record dl div {
+    display: grid;
+    gap: var(--space-1);
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  @media (min-width: 40rem) {
+    .record dl div {
+      grid-template-columns: 10rem 1fr;
+      align-items: baseline;
+    }
+  }
+
+  .record dd {
+    margin: 0;
+  }
+
+  .source {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
+</style>

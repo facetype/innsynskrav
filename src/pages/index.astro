@@ -1,0 +1,188 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { companies } from '../data/companies';
+---
+
+<Layout
+  title="Be om innsyn etter avslag på jobbsøknad"
+  description="Finn riktig personvernadresse og be arbeidsgiveren om innsyn i hvordan søknaden din ble behandlet."
+>
+  <div class="reveal">
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">GDPR artikkel 15 og 22</p>
+      <h1 id="hero-title">Fått avslag? Du har rett til å <em>se</em> hva de vet om deg.</h1>
+      <p class="lede">
+        Arbeidsgiveren må fortelle deg hvilke opplysninger de har om søknaden din, hvem de har delt dem
+        med — og om avslaget ble tatt av en maskin. De har én måned på å svare.
+      </p>
+    </section>
+
+    <ol class="steps" aria-label="Slik fungerer det">
+      <li>
+        <span class="step-number mono" aria-hidden="true">01</span>
+        <h2>Finn riktig mottaker</h2>
+        <p>Avslaget kommer ofte fra et rekrutteringssystem. Kravet skal til personvernombudet.</p>
+      </li>
+      <li>
+        <span class="step-number mono" aria-hidden="true">02</span>
+        <h2>Send innsynskravet</h2>
+        <p>Fra din egen e-post. Vi lagrer ingenting av det du skriver.</p>
+      </li>
+      <li>
+        <span class="step-number mono" aria-hidden="true">03</span>
+        <h2>Én måneds frist</h2>
+        <p>Svarer de ikke, purrer du — og klager til Datatilsynet.</p>
+      </li>
+    </ol>
+
+    <section class="register" aria-labelledby="register-title">
+      <div class="register-head">
+        <h2 id="register-title">Arbeidsgivere</h2>
+        <p class="eyebrow">{companies.length} kontrollert</p>
+      </div>
+      <ul>
+        {
+          companies.map((company) => (
+            <li>
+              <a href={`/firma/${company.slug}/`}>
+                <span class="register-brand">{company.brands.join(' / ')}</span>
+                <span class="register-controller">{company.controller.name}</span>
+                <span class="register-email mono">{company.privacyEmail}</span>
+                <span class="register-arrow" aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .reveal {
+    display: grid;
+    gap: var(--space-7);
+  }
+
+  .hero {
+    display: grid;
+    gap: var(--space-5);
+    max-width: 52rem;
+  }
+
+  .lede {
+    font-size: var(--text-lg);
+    color: var(--ink-muted);
+    max-width: var(--measure);
+  }
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  @media (min-width: 48rem) {
+    .steps {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .steps li {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+    padding-top: var(--space-4);
+    border-top: 2px solid var(--ink);
+  }
+
+  .step-number {
+    color: var(--stamp);
+  }
+
+  .steps p {
+    color: var(--ink-muted);
+  }
+
+  .register-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .register ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .register a {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-1) var(--space-4);
+    padding: var(--space-4) var(--space-2);
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+    transition: background-color 150ms var(--ease-out);
+  }
+
+  .register a:hover {
+    background: var(--stamp-wash);
+  }
+
+  .register-brand {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    line-height: 1.1;
+  }
+
+  .register-controller,
+  .register-email {
+    grid-column: 1;
+    color: var(--ink-muted);
+    font-size: var(--text-sm);
+  }
+
+  .register-email {
+    overflow-wrap: anywhere;
+  }
+
+  .register-arrow {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: center;
+    color: var(--stamp);
+    font-size: var(--text-xl);
+    transition: transform 150ms var(--ease-out);
+  }
+
+  .register a:hover .register-arrow {
+    transform: translateX(4px);
+  }
+
+  @media (min-width: 48rem) {
+    .register a {
+      grid-template-columns: 1.2fr 1fr 1.2fr auto;
+      align-items: baseline;
+    }
+
+    .register-controller,
+    .register-email,
+    .register-arrow {
+      grid-column: auto;
+      grid-row: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .register a,
+    .register-arrow {
+      transition: none;
+    }
+  }
+</style>

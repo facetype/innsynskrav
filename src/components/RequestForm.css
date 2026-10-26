@@ -1,0 +1,133 @@
+.request {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.request-form {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.request-privacy {
+  padding: var(--space-3) var(--space-4);
+  background: var(--stamp-wash);
+  font-size: var(--text-sm);
+}
+
+.request-fields {
+  display: grid;
+  gap: var(--space-4) var(--space-5);
+}
+
+@media (min-width: 40rem) {
+  .request-fields {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.request-field {
+  display: grid;
+  gap: var(--space-1);
+  align-content: start;
+}
+
+.request-field label {
+  font-weight: 600;
+  font-size: var(--text-sm);
+}
+
+.request-optional {
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+
+.request-field input {
+  width: 100%;
+  padding: var(--space-3);
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-bottom: 2px solid var(--ink-muted);
+  border-radius: var(--radius);
+}
+
+.request-field input:focus-visible {
+  border-bottom-color: var(--stamp);
+  outline-offset: 1px;
+}
+
+.request-hint {
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+}
+
+.request-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+
+.request-actions .button {
+  border: 0;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.request-copy {
+  padding: var(--space-3) var(--space-4);
+  font: inherit;
+  color: var(--ink);
+  background: none;
+  border: 1px solid var(--ink-muted);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.request-copy:hover {
+  border-color: var(--ink);
+}
+
+.request-status {
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+}
+
+.request-preview {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+}
+
+.request-meta {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--text-sm);
+}
+
+.request-meta div {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+}
+
+.request-meta dt {
+  color: var(--ink-muted);
+}
+
+.request-meta dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.request-body {
+  white-space: pre-wrap;
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}

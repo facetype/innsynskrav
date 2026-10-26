@@ -1,0 +1,207 @@
+:root {
+  --paper: #f4f1ea;
+  --paper-raised: #fbfaf6;
+  --ink: #16140f;
+  --ink-muted: #5b574d;
+  --rule: #d9d3c4;
+  --stamp: #b3261e;
+  --stamp-wash: rgb(179 38 30 / 0.07);
+  --on-stamp: #fbfaf6;
+
+  --font-display: 'Instrument Serif', 'Times New Roman', serif;
+  --font-body: 'Public Sans Variable', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --text-sm: 0.875rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.75rem;
+  --text-display: clamp(2.5rem, 7vw, 4.75rem);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2.5rem;
+  --space-7: 4rem;
+
+  --page-width: 64rem;
+  --measure: 38rem;
+  --gutter: 1rem;
+  --radius: 2px;
+  --stamp-tilt: -4deg;
+
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --reveal-duration: 600ms;
+  --reveal-step: 80ms;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #14130f;
+    --paper-raised: #1c1b16;
+    --ink: #ece7da;
+    --ink-muted: #a39d8e;
+    --rule: #34312a;
+    --stamp: #e5554a;
+    --stamp-wash: rgb(229 85 74 / 0.1);
+    --on-stamp: #14130f;
+    color-scheme: dark;
+  }
+}
+
+@media (min-width: 40rem) {
+  :root {
+    --gutter: 2rem;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Paper grain */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+h1 {
+  font-size: var(--text-display);
+}
+
+h2 {
+  font-size: var(--text-xl);
+}
+
+h1 em,
+h2 em {
+  color: var(--stamp);
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--stamp);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--stamp);
+  outline-offset: 3px;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.page {
+  width: 100%;
+  max-width: var(--page-width);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: -100%;
+  padding: var(--space-2) var(--space-4);
+  background: var(--ink);
+  color: var(--paper);
+  z-index: 1;
+}
+
+.skip-link:focus {
+  top: var(--space-2);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  background: var(--stamp);
+  color: var(--on-stamp);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius);
+  transition: transform 150ms var(--ease-out);
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.reveal > * {
+  animation: reveal var(--reveal-duration) var(--ease-out) both;
+}
+
+.reveal > :nth-child(2) { animation-delay: calc(var(--reveal-step) * 1); }
+.reveal > :nth-child(3) { animation-delay: calc(var(--reveal-step) * 2); }
+.reveal > :nth-child(4) { animation-delay: calc(var(--reveal-step) * 3); }
+.reveal > :nth-child(5) { animation-delay: calc(var(--reveal-step) * 4); }
+.reveal > :nth-child(n + 6) { animation-delay: calc(var(--reveal-step) * 5); }
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal > * {
+    animation: none;
+  }
+
+  .button {
+    transition: none;
+  }
+}
