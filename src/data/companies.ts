@@ -45,4 +45,18 @@ export const companies: Company[] = [
     senders: [{ ats: 'teamtailor', slug: 'synoptikgroupnorway' }],
     lastVerified: '2026-10-26',
   },
+  // TODO: placeholder data for UI testing — replace with verified details or remove before deploying
+  {
+    slug: 'coop-xtra',
+    brands: ['Coop Xtra'],
+    controller: {
+      name: 'Eksempel AS',
+      orgNr: '000000000',
+      address: 'Eksempelveien 1, 0000 Oslo',
+    },
+    privacyEmail: 'personvern@example.com',
+    privacyPolicyUrl: 'https://example.com/',
+    senders: [],
+    lastVerified: '2026-10-26',
+  },
 ];

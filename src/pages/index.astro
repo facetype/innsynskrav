@@ -1,6 +1,16 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { companies } from '../data/companies';
+
+/** Enough cards that one loop is wider than a wide screen, so the seamless wrap never shows a gap. */
+const MIN_CARDS_PER_LOOP = 10;
+const SECONDS_PER_CARD = 4;
+
+const loop = Array.from(
+  { length: Math.ceil(MIN_CARDS_PER_LOOP / companies.length) },
+  () => companies,
+).flat();
+const duration = `${loop.length * SECONDS_PER_CARD}s`;
 ---
 
 <Layout
@@ -13,33 +23,31 @@ import { companies } from '../data/companies';
       Du har rett til å <mark>se hva arbeidsgiveren vet om deg</mark> — og få vite om det var en maskin som
       sa nei. Vi finner riktig adresse og skriver kravet for deg.
     </p>
+    <a class="button" href="/firma/">Finn arbeidsgiveren din <span aria-hidden="true">→</span></a>
   </section>
 
-  <section class="companies" aria-labelledby="companies-title">
-    <h2 id="companies-title">Hvor søkte du?</h2>
-    <ul>
+  <!-- Decorative: keyboard and screen reader users reach every company through /firma/ -->
+  <div class="marquee" aria-hidden="true" style={`--marquee-duration: ${duration}`}>
+    <div class="marquee-track">
       {
-        companies.map((company) => (
-          <li>
-            <a href={`/firma/${company.slug}/`}>
-              <span class="company-brand">{company.brands.join(' / ')}</span>
-              <span class="company-controller">{company.controller.name}</span>
-              <span class="company-arrow" aria-hidden="true">→</span>
+        [0, 1].map(() =>
+          loop.map((company) => (
+            <a class="marquee-card" href={`/firma/${company.slug}/`} tabindex="-1">
+              <span class="marquee-brand">{company.brands[0]}</span>
+              <span class="marquee-controller">{company.controller.name}</span>
             </a>
-          </li>
-        ))
+          )),
+        )
       }
-    </ul>
-    <p class="missing">
-      Listen er under arbeid — flere arbeidsgivere kommer.
-    </p>
-  </section>
+    </div>
+  </div>
 </Layout>
 
 <style>
   .hero {
     display: grid;
     gap: var(--space-5);
+    justify-items: start;
     max-width: 44rem;
     padding-block: var(--space-6) var(--space-7);
   }
@@ -54,63 +62,63 @@ import { companies } from '../data/companies';
     color: var(--ink);
   }
 
-  .companies {
-    display: grid;
-    gap: var(--space-5);
+  .marquee {
+    overflow: hidden;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-block: var(--space-2) var(--space-4);
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
   }
 
-  .companies ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
+  .marquee-track {
+    display: flex;
     gap: var(--space-3);
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    width: max-content;
+    animation: marquee var(--marquee-duration) linear infinite;
   }
 
-  .companies a {
-    position: relative;
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  .marquee-card {
     display: grid;
     gap: var(--space-1);
+    width: 14rem;
     padding: var(--space-5);
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: var(--radius);
     text-decoration: none;
-    transition:
-      border-color 150ms var(--ease-out),
-      transform 150ms var(--ease-out);
+    transition: border-color 150ms var(--ease-out);
   }
 
-  .companies a:hover {
+  .marquee-card:hover {
     border-color: var(--ink);
-    transform: translateY(-2px);
   }
 
-  .company-brand {
+  .marquee-brand {
     font-size: var(--text-lg);
     font-weight: 700;
   }
 
-  .company-controller {
+  .marquee-controller {
     font-size: var(--text-sm);
     color: var(--ink-muted);
   }
 
-  .company-arrow {
-    position: absolute;
-    top: var(--space-5);
-    right: var(--space-5);
-    font-size: var(--text-lg);
-  }
-
-  .missing {
-    font-size: var(--text-sm);
-    color: var(--ink-muted);
+  /* The track holds two identical halves; shifting by one half (plus half a gap) loops seamlessly. */
+  @keyframes marquee {
+    to {
+      transform: translateX(calc(-50% - var(--space-3) / 2));
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .companies a {
+    .marquee-track {
+      animation: none;
+    }
+
+    .marquee-card {
       transition: none;
     }
   }

@@ -1,0 +1,31 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CompanySearch, { type CompanySummary } from '../../components/CompanySearch';
+import { companies } from '../../data/companies';
+
+const summaries: CompanySummary[] = companies
+  .map((company) => ({
+    slug: company.slug,
+    brands: company.brands,
+    controllerName: company.controller.name,
+  }))
+  .sort((a, b) => a.brands[0].localeCompare(b.brands[0], 'nb'));
+---
+
+<Layout
+  title="Alle arbeidsgivere — finn riktig personvernadresse"
+  description="Søk opp arbeidsgiveren din og finn riktig adresse for innsynskrav etter avslag på jobbsøknad."
+>
+  <div class="all">
+    <h1>Hvor søkte du?</h1>
+    <CompanySearch client:load companies={summaries} />
+  </div>
+</Layout>
+
+<style>
+  .all {
+    display: grid;
+    gap: var(--space-6);
+    max-width: 48rem;
+  }
+</style>
