@@ -1,0 +1,117 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import RequestForm from '../../components/RequestForm';
+import { buildAddCompanyHref } from '../../lib/contact';
+---
+
+<Layout
+  title="Innsynskrav til en annen arbeidsgiver"
+  description="Lag et innsynskrav etter avslag på jobbsøknad, også når arbeidsgiveren ikke står i listen."
+>
+  <nav aria-label="Brødsmuler" class="crumbs">
+    <a href="/firma/">← Alle arbeidsgivere</a>
+  </nav>
+
+  <header class="title">
+    <h1>Innsynskrav til en annen arbeidsgiver</h1>
+    <p class="lede">
+      Står ikke arbeidsgiveren i listen? Du kan fortsatt sende kravet — du må bare finne
+      <mark>riktig adresse</mark> selv.
+    </p>
+  </header>
+
+  <section class="guide" aria-labelledby="guide-title">
+    <h2 id="guide-title">Slik finner du adressen</h2>
+    <ol>
+      <li>Søk etter «personvernerklæring» eller «personvern» på nettsiden deres.</li>
+      <li>Se etter en adresse til personvernombudet, f.eks. <span class="mono">personvern@…</span> eller <span class="mono">privacy@…</span>.</li>
+      <li><strong>Ikke svar på avslaget.</strong> Det kommer ofte fra et rekrutteringssystem som ikke når frem til personvernombudet.</li>
+    </ol>
+    <p class="add">
+      Fant du adressen? <a href={buildAddCompanyHref()}>Send den til oss</a>, så legger vi arbeidsgiveren til for
+      neste person.
+    </p>
+  </section>
+
+  <section class="request-section" aria-labelledby="krav-title">
+    <h2 id="krav-title" class="visually-hidden">Lag innsynskravet</h2>
+    <RequestForm client:load />
+  </section>
+
+  <section class="after" aria-labelledby="after-title">
+    <h2 id="after-title">Hva skjer etterpå?</h2>
+    <p>
+      De har én måned på å svare. Hører du ingenting, kan du purre — og deretter klage til Datatilsynet.
+    </p>
+  </section>
+</Layout>
+
+<style>
+  .crumbs a {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+    text-decoration: none;
+  }
+
+  .crumbs a:hover {
+    color: var(--ink);
+  }
+
+  .title {
+    display: grid;
+    gap: var(--space-4);
+    padding-block: var(--space-5) var(--space-6);
+  }
+
+  .lede {
+    font-size: var(--text-lg);
+    color: var(--ink-muted);
+    max-width: var(--measure);
+  }
+
+  .lede mark {
+    color: var(--ink);
+  }
+
+  .guide {
+    display: grid;
+    gap: var(--space-3);
+    max-width: var(--measure);
+    padding: var(--space-5);
+    margin-bottom: var(--space-6);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  .guide h2 {
+    font-size: var(--text-lg);
+  }
+
+  .guide ol {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding-left: var(--space-5);
+  }
+
+  .add {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
+
+  .after {
+    display: grid;
+    gap: var(--space-2);
+    max-width: var(--measure);
+    padding-top: var(--space-7);
+  }
+
+  .after h2 {
+    font-size: var(--text-lg);
+  }
+
+  .after p {
+    color: var(--ink-muted);
+  }
+</style>

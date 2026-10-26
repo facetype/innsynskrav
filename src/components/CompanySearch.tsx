@@ -1,4 +1,5 @@
 import { useId, useMemo, useState } from 'react';
+import { buildAddCompanyHref } from '../lib/contact';
 import './CompanySearch.css';
 
 export interface CompanySummary {
@@ -58,10 +59,21 @@ export default function CompanySearch({ companies }: Props) {
           ))}
         </ul>
       ) : (
-        <p className="search-empty">
-          Ingen treff på «{query.trim()}». Listen er under arbeid — flere arbeidsgivere kommer.
-        </p>
+        <p className="search-empty">Ingen treff på «{query.trim()}».</p>
       )}
+
+      <div className="search-missing">
+        <p className="search-missing-title">Finner du ikke arbeidsgiveren?</p>
+        <p className="search-missing-text">Du kan fortsatt lage kravet — du må bare finne adressen selv.</p>
+        <div className="search-missing-actions">
+          <a className="button" href="/firma/annen/">
+            Lag krav til en annen arbeidsgiver <span aria-hidden="true">→</span>
+          </a>
+          <a className="search-missing-add" href={buildAddCompanyHref(query)}>
+            Be oss legge den til
+          </a>
+        </div>
+      </div>
     </div>
   );
 }

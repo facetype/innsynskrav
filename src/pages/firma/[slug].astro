@@ -4,6 +4,7 @@ import Layout from '../../layouts/Layout.astro';
 import { atsNames, companies, type Company } from '../../data/companies';
 import { formatDate, formatOrgNr } from '../../lib/format';
 import RequestForm from '../../components/RequestForm';
+import { buildCorrectionHref } from '../../lib/contact';
 
 export const getStaticPaths = (() =>
   companies.map((company) => ({
@@ -39,6 +40,9 @@ const atsList = companyAtsNames.join(' / ');
         Kontrollert {formatDate(company.lastVerified)} mot{' '}
         <a href={company.privacyPolicyUrl}>personvernerklæringen</a>
       </p>
+      <p class="recipient-report">
+        <a href={buildCorrectionHref(brand, company.privacyEmail)}>Feil adresse? Si fra</a>
+      </p>
     </div>
     {
       atsList && (
@@ -51,7 +55,10 @@ const atsList = companyAtsNames.join(' / ');
 
   <section id="krav" class="request-section" aria-labelledby="krav-title">
     <h2 id="krav-title" class="visually-hidden">Lag innsynskravet</h2>
-    <RequestForm client:load brand={brand} recipient={company.privacyEmail} atsNames={companyAtsNames} />
+    <RequestForm
+      client:load
+      company={{ brand, recipient: company.privacyEmail, atsNames: companyAtsNames }}
+    />
   </section>
 
   <section class="after" aria-labelledby="after-title">
@@ -118,6 +125,11 @@ const atsList = companyAtsNames.join(' / ');
     color: var(--ink-muted);
   }
 
+  .recipient-report {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
+
   .check {
     color: var(--ok);
     font-weight: 700;
@@ -162,14 +174,5 @@ const atsList = companyAtsNames.join(' / ');
   .controller dd {
     margin: 0;
     color: var(--ink);
-  }
-
-  .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
   }
 </style>

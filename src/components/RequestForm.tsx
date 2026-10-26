@@ -2,14 +2,24 @@ import { useId, useMemo, useState, type ChangeEvent, type SubmitEvent } from 're
 import { buildMailtoHref, buildRequest, type RequestInput } from '../lib/request-template';
 import './RequestForm.css';
 
-interface Props {
+interface KnownCompany {
   brand: string;
   recipient: string;
   atsNames: string[];
 }
 
+interface Props {
+  /** Omit for the generic flow, where the user supplies the employer and its privacy address. */
+  company?: KnownCompany;
+}
+
+interface FormValues extends RequestInput {
+  employerName: string;
+  employerEmail: string;
+}
+
 interface Field {
-  key: keyof RequestInput;
+  key: keyof FormValues;
   label: string;
   type: 'text' | 'email' | 'tel' | 'date';
   required?: boolean;
@@ -17,7 +27,18 @@ interface Field {
   hint?: string;
 }
 
-const fields: Field[] = [
+const employerFields: Field[] = [
+  { key: 'employerName', label: 'Arbeidsgiver', type: 'text', required: true, hint: 'F.eks. «Rema 1000».' },
+  {
+    key: 'employerEmail',
+    label: 'Personvernadresse',
+    type: 'email',
+    required: true,
+    hint: 'Fra personvernerklæringen deres — ikke adressen avslaget kom fra.',
+  },
+];
+
+const applicantFields: Field[] = [
   { key: 'fullName', label: 'Fullt navn', type: 'text', required: true, autoComplete: 'name', hint: 'Slik det står i søknaden.' },
   { key: 'applicationEmail', label: 'E-post brukt i søknaden', type: 'email', required: true, autoComplete: 'email' },
   { key: 'phone', label: 'Telefon', type: 'tel', autoComplete: 'tel' },
@@ -28,7 +49,9 @@ const fields: Field[] = [
   { key: 'reference', label: 'Referanse fra avslaget', type: 'text', hint: 'Hvis avslaget har et saksnummer.' },
 ];
 
-const emptyInput: RequestInput = {
+const emptyValues: FormValues = {
+  employerName: '',
+  employerEmail: '',
   fullName: '',
   applicationEmail: '',
   phone: '',
@@ -41,15 +64,22 @@ const emptyInput: RequestInput = {
 
 const COPY_STATUS_MS = 3000;
 
-export default function RequestForm({ brand, recipient, atsNames }: Props) {
+const NO_ATS: string[] = [];
+
+export default function RequestForm({ company }: Props) {
   const idPrefix = useId();
-  const [input, setInput] = useState<RequestInput>(emptyInput);
+  const [values, setValues] = useState<FormValues>(emptyValues);
   const [copyStatus, setCopyStatus] = useState('');
 
-  const request = useMemo(() => buildRequest(input, { brand, atsNames }), [input, brand, atsNames]);
+  const fields = company ? applicantFields : [...employerFields, ...applicantFields];
+  const brand = company?.brand ?? (values.employerName.trim() || '[arbeidsgiver]');
+  const recipient = company?.recipient ?? values.employerEmail.trim();
+  const atsNames = company?.atsNames ?? NO_ATS;
 
-  const update = (key: keyof RequestInput) => (event: ChangeEvent<HTMLInputElement>) =>
-    setInput((current) => ({ ...current, [key]: event.target.value }));
+  const request = useMemo(() => buildRequest(values, { brand, atsNames }), [values, brand, atsNames]);
+
+  const update = (key: keyof FormValues) => (event: ChangeEvent<HTMLInputElement>) =>
+    setValues((current) => ({ ...current, [key]: event.target.value }));
 
   const openEmail = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -88,7 +118,7 @@ export default function RequestForm({ brand, recipient, atsNames }: Props) {
                   required={field.required}
                   autoComplete={field.autoComplete ?? 'off'}
                   aria-describedby={hintId}
-                  value={input[field.key]}
+                  value={values[field.key]}
                   onChange={update(field.key)}
                 />
                 {field.hint && (
@@ -124,7 +154,7 @@ export default function RequestForm({ brand, recipient, atsNames }: Props) {
           <dl className="request-meta mono">
             <div>
               <dt>Til</dt>
-              <dd>{recipient}</dd>
+              <dd>{recipient || '[personvernadresse]'}</dd>
             </div>
             <div>
               <dt>Emne</dt>

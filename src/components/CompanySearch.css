@@ -77,3 +77,34 @@
   padding-block: var(--space-5);
   color: var(--ink-muted);
 }
+
+.search-missing {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+  margin-top: var(--space-5);
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.search-missing-title {
+  font-weight: 700;
+}
+
+.search-missing-text {
+  color: var(--ink-muted);
+}
+
+.search-missing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+  margin-top: var(--space-2);
+}
+
+.search-missing-add {
+  font-size: var(--text-sm);
+}
